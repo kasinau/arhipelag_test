@@ -1,0 +1,29 @@
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+<GridPane fx:controller="sample.Controller"
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+    <children>
+        <Text layoutX="29.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name:" wrappingWidth="69.677734375" />
+        <MenuBar>
+            <menus>
+                <Menu mnemonicParsing="false" text="Actiuni">
+                    <items>
+                        <MenuItem id="add_column" text="Adauga coloana" />
+                        <MenuItem id="remove_column" text="Sterge coloana" />
+                        <MenuItem id="add_row" text="Adauga rind" />
+                        <MenuItem id="remove_row" text="Sterge rind" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+    </children>
+</GridPane>
