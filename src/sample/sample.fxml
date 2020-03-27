@@ -15,12 +15,17 @@
         <ButtonBar GridPane.rowIndex="3">
             <buttons>
                 <Button text="Adauga rind" onAction="#handleAddRowButtonAction" />
-                <Button text="Sterge rind" />
+                <Button text="Sterge rind" onAction="#handleDeleteRowButtonAction" />
                 <Button text="Adauga coloana" />
                 <Button text="Sterge coloana" />
             </buttons>
         </ButtonBar>
-<!--        <DialogPane visible="false">Selecteaza o optiune pentru a continua</DialogPane>-->
+        <GridPane fx:id="confirmationForm" GridPane.rowIndex="4" visible="false">
+            <Text fx:id="confirmationLabel"  GridPane.rowIndex="1" />
+            <TextField fx:id="actionLocation" prefHeight="40"  GridPane.rowIndex="2" />
+            <Button text="Expediaza"  GridPane.rowIndex="2" GridPane.columnIndex="2" onAction="#handleActionLocation" />
+            <Text fx:id="confirmationError"  GridPane.rowIndex="3" />
+        </GridPane>
     </children>
    <columnConstraints>
       <ColumnConstraints />
