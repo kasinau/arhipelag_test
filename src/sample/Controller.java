@@ -77,7 +77,7 @@ public class Controller implements Initializable
     private static String[][] getMap() {
         String[][] mapData = new String[100][100];
         try {
-            File myObj = new File("/Users/rpavelco/Projects/IdeaProjects/arhipelag/src/sample/Insule.in");
+            File myObj = new File(System.getProperty("user.dir") + "/src/sample/Insule.in");
             Scanner myReader = new Scanner(myObj);
             int i = 0;
             while (myReader.hasNextLine()) {
