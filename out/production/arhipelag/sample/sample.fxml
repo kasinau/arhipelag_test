@@ -4,21 +4,23 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<GridPane alignment="center" hgap="10" vgap="10" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.2-internal" fx:controller="sample.Controller">
+<GridPane
+        alignment="center"
+        hgap="10" vgap="10"
+        xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.2-internal"
+        fx:controller="sample.Controller"
+        id="grid_pane">
     <children>
         <Text fx:id="map" />
-        <MenuBar GridPane.rowIndex="2">
-            <menus>
-                <Menu mnemonicParsing="false" text="Actiuni">
-                    <items>
-                        <MenuItem id="add_column" text="Adauga coloana" />
-                        <MenuItem id="remove_column" text="Sterge coloana" />
-                        <MenuItem id="add_row" text="Adauga rind" />
-                        <MenuItem id="remove_row" text="Sterge rind" />
-                    </items>
-                </Menu>
-            </menus>
-        </MenuBar>
+        <ButtonBar GridPane.rowIndex="3">
+            <buttons>
+                <Button text="Adauga rind" onAction="#handleAddRowButtonAction" />
+                <Button text="Sterge rind" />
+                <Button text="Adauga coloana" />
+                <Button text="Sterge coloana" />
+            </buttons>
+        </ButtonBar>
+<!--        <DialogPane visible="false">Selecteaza o optiune pentru a continua</DialogPane>-->
     </children>
    <columnConstraints>
       <ColumnConstraints />

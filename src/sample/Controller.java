@@ -2,8 +2,11 @@ package sample;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.text.Text;
 
 import java.awt.*;
@@ -21,12 +24,26 @@ public class Controller implements Initializable
 
     @FXML
     Text map;
-    final StringProperty mapData = new SimpleStringProperty(arrayToString(getMap()));
+    @FXML
+    DialogPane dialog;
+    String action;
+
+    StringProperty mapData = new SimpleStringProperty(arrayToString(getMap()));
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle)
     {
         map.textProperty().bind(mapData);
+    }
+
+    @FXML
+    private void handleAddRowButtonAction(ActionEvent event)
+    {
+        action = "add_row";
+        System.out.println("You clicked me!");
+        mapData.setValue("map updated");
+//        dialog.setContentText("Selecteaza pozitia N/S");
+//        dialog.setVisible(true);
     }
 
     private String arrayToString(String[][] array)

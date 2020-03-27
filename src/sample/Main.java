@@ -11,8 +11,20 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+
+
+        String image = Main.class.getResource("background.jpg").toExternalForm();
+        root.setStyle("-fx-background-image: url('" + image + "'); " +
+                "-fx-background-position: center center; " +
+                "-fx-background-repeat: repeat;");
+
+
         primaryStage.setTitle("Arhipelag");
-        primaryStage.setScene(new Scene(root, 300, 275));
+//        Image image = new Image("background.jpg");
+//        ImagePattern pattern = new ImagePattern(image);
+        Scene scene = new Scene(root, 800, 800);
+//        scene.setFill(pattern);
+        primaryStage.setScene(scene);
         primaryStage.show();
     }
 
