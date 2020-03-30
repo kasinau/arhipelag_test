@@ -16,8 +16,8 @@
             <buttons>
                 <Button text="Adauga rind" onAction="#handleAddRowButtonAction" />
                 <Button text="Sterge rind" onAction="#handleDeleteRowButtonAction" />
-                <Button text="Adauga coloana" />
-                <Button text="Sterge coloana" />
+                <Button text="Adauga coloana" onAction="#handleAddColumnButtonAction"  />
+                <Button text="Sterge coloana" onAction="#handleDeleteColumnButtonAction"  />
             </buttons>
         </ButtonBar>
         <GridPane fx:id="confirmationForm" GridPane.rowIndex="4" visible="false">

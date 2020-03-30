@@ -36,8 +36,8 @@ public class Controller implements Initializable
     GridPane confirmationForm;
 
     String action;
-    String rowError = "Valoarea de intrtare trebuie sa fie egala cu N sau S";
-    String columnError = "Valoarea de intrtare trebuie sa fie egala cu N sau S";
+    String rowError = "Valoarea de intrare trebuie sa fie egala cu N sau S";
+    String columnError = "Valoarea de intrare trebuie sa fie egala cu E sau V";
 
     StringProperty mapData = new SimpleStringProperty(arrayToString(getMap()));
 
@@ -66,9 +66,24 @@ public class Controller implements Initializable
     }
 
     @FXML
+    private void handleAddColumnButtonAction(ActionEvent event)
+    {
+        action = "add_column";
+        confirmationLabel.textProperty().bind(new SimpleStringProperty("Selecteaza pozitia E/V"));
+        confirmationForm.visibleProperty().setValue(true);
+    }
+
+    @FXML
+    private void handleDeleteColumnButtonAction(ActionEvent event)
+    {
+        action = "delete_column";
+        confirmationLabel.textProperty().bind(new SimpleStringProperty("Selecteaza pozitia E/V"));
+        confirmationForm.visibleProperty().setValue(true);
+    }
+
+    @FXML
     private void handleActionLocation(ActionEvent event) throws IOException
     {
-        System.out.println(action);
         boolean isValid = isActionInputValid();
         if (!isValid) {
             if (action == "add_row" || action == "delete_row") {
@@ -96,11 +111,16 @@ public class Controller implements Initializable
                 break;
             case "delete_row" : deleteRow();
                 break;
+            case "add_column" : addColumn();
+                break;
+            case "delete_column" : deleteColumn();
+                break;
         }
     }
 
     private void addRow() throws IOException
     {
+        System.out.println("addRow");
         String [][] mapData = getMap();
         switch (actionLocation.getText()) {
             case "N": {
@@ -111,10 +131,10 @@ public class Controller implements Initializable
                 String firstRow = "" + (currentRowsNumber + 1) + " " + mapData[0][1] + System.lineSeparator();
                 writeDataToFile(firstRow, mapData);
             }
+            break;
             case "S": {
                 int currentRowsNumber = Integer.parseInt(mapData[0][0]);
                 System.arraycopy(mapData[currentRowsNumber], 0, mapData[currentRowsNumber + 1], 0, mapData[currentRowsNumber].length);
-                System.out.println(arrayToString(mapData));
                 String firstRow = "" + (currentRowsNumber + 1) + " " + mapData[0][1] + System.lineSeparator();
                 writeDataToFile(firstRow, mapData);
             }
@@ -134,11 +154,80 @@ public class Controller implements Initializable
                 String firstRow = "" + (currentRowsNumber - 1) + " " + mapData[0][1] + System.lineSeparator();
                 writeDataToFile(firstRow, mapData);
             }
+            break;
             case "S": {
                 int currentRowsNumber = Integer.parseInt(mapData[0][0]);
                 System.arraycopy(mapData[currentRowsNumber + 1], 0, mapData[currentRowsNumber], 0, mapData[currentRowsNumber].length);
-                System.out.println(arrayToString(mapData));
                 String firstRow = "" + (currentRowsNumber - 1) + " " + mapData[0][1] + System.lineSeparator();
+                writeDataToFile(firstRow, mapData);
+            }
+            break;
+        }
+    }
+
+    private void addColumn() throws IOException
+    {
+        System.out.println("addColumn");
+        String [][] mapData = getMap();
+        switch (actionLocation.getText()) {
+            case "E": {
+                int currentRowsNumber = Integer.parseInt(mapData[0][0]);
+                int currentColumnsNumber = Integer.parseInt(mapData[0][1]);
+                for (int i = 1; i <= currentRowsNumber; i++) {
+                    mapData[i][currentColumnsNumber] = mapData[i][currentColumnsNumber - 1];
+                }
+                String firstRow = "" + currentRowsNumber + " " + (currentColumnsNumber + 1) + System.lineSeparator();
+                writeDataToFile(firstRow, mapData);
+            }
+            break;
+            case "V": {
+                int currentRowsNumber = Integer.parseInt(mapData[0][0]);
+                int currentColumnsNumber = Integer.parseInt(mapData[0][1]);
+                for (int i = 1; i <= currentRowsNumber; i++) {
+                    System.out.println(mapData[i].length);
+                    if (mapData[i][0] == null) {
+                        break;
+                    }
+                    for (int j = currentColumnsNumber; j > 0; j--) {
+                        mapData[i][j] = mapData[i][j - 1];
+                    }
+                    mapData[i][0] = mapData[i][1];
+                }
+                String firstRow = "" + currentRowsNumber + " " + (currentColumnsNumber + 1) + System.lineSeparator();
+                writeDataToFile(firstRow, mapData);
+            }
+            break;
+        }
+    }
+
+    private void deleteColumn() throws IOException
+    {
+        System.out.println("deleteColumn");
+        String [][] mapData = getMap();
+        switch (actionLocation.getText()) {
+            case "E": {
+                int currentRowsNumber = Integer.parseInt(mapData[0][0]);
+                int currentColumnsNumber = Integer.parseInt(mapData[0][1]);
+                for (int i = 1; i <= currentRowsNumber; i++) {
+                    mapData[i][currentColumnsNumber - 1] = null;
+                }
+                String firstRow = "" + currentRowsNumber + " " + (currentColumnsNumber - 1) + System.lineSeparator();
+                writeDataToFile(firstRow, mapData);
+            }
+            break;
+            case "V": {
+                int currentRowsNumber = Integer.parseInt(mapData[0][0]);
+                int currentColumnsNumber = Integer.parseInt(mapData[0][1]);
+                for (int i = 1; i <= currentRowsNumber; i++) {
+                    System.out.println(mapData[i].length);
+                    if (mapData[i][0] == null) {
+                        break;
+                    }
+                    for (int j = 0; j <= currentColumnsNumber; j++) {
+                        mapData[i][j] = mapData[i][j + 1];
+                    }
+                }
+                String firstRow = "" + currentRowsNumber + " " + (currentColumnsNumber - 1) + System.lineSeparator();
                 writeDataToFile(firstRow, mapData);
             }
             break;
@@ -149,9 +238,10 @@ public class Controller implements Initializable
     {
         String stringMapData = firstRow;
         stringMapData += arrayToString(mapData);
-        stringMapData = stringMapData.replaceAll(System.lineSeparator() + System.lineSeparator(), System.lineSeparator());
         stringMapData = stringMapData.replaceAll("\t", " ");
         stringMapData = stringMapData.replaceAll(" " + System.lineSeparator(), System.lineSeparator());
+        stringMapData = stringMapData.replaceAll(System.lineSeparator() + System.lineSeparator(), System.lineSeparator());
+        System.out.println(stringMapData);
         writeToFile(System.getProperty("user.dir") + "/src/sample/Insule.in", stringMapData);
     }
 
@@ -163,7 +253,7 @@ public class Controller implements Initializable
                 return (Objects.equals(actionLocation.getText(), "N") || Objects.equals(actionLocation.getText(), "S"));
             case "add_column":
             case "delete_column":
-                return (Objects.equals(actionLocation.getText(), "E") || Objects.equals(actionLocation.getText(), "W"));
+                return (Objects.equals(actionLocation.getText(), "E") || Objects.equals(actionLocation.getText(), "V"));
         }
         return false;
     }
@@ -176,7 +266,7 @@ public class Controller implements Initializable
         do {
             endOfDataReached = true;
             for (j = 0; j < array[i].length; j++) {
-                if (array[i][j] == null) {
+                if (array[i][j] == null || array[i][j].length() == 0) {
                     continue;
                 }
                 map += array[i][j] + "\t";
