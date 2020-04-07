@@ -27,6 +27,8 @@ public class Controller implements Initializable
     @FXML
     Text map;
     @FXML
+    Text perimeterUnits;
+    @FXML
     Text confirmationLabel;
     @FXML
     Text confirmationError;
@@ -40,11 +42,13 @@ public class Controller implements Initializable
     String columnError = "Valoarea de intrare trebuie sa fie egala cu E sau V";
 
     StringProperty mapData = new SimpleStringProperty(arrayToString(getMap()));
+    StringProperty perimeterUnitsData = new SimpleStringProperty(String.valueOf(getPerimeterUnits()));
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle)
     {
         map.textProperty().bind(mapData);
+        perimeterUnits.textProperty().bind(perimeterUnitsData);
         confirmationLabel.textProperty().bind(new SimpleStringProperty(""));
         confirmationError.textProperty().bind(new SimpleStringProperty(""));
     }
@@ -94,14 +98,20 @@ public class Controller implements Initializable
         } else {
             confirmationError.textProperty().bind(new SimpleStringProperty(""));
             handleAction();
-            mapData = new SimpleStringProperty(arrayToString(getMap()));
-            map.textProperty().bind(mapData);
-            confirmationLabel.textProperty().bind(new SimpleStringProperty(""));
-            confirmationError.textProperty().bind(new SimpleStringProperty(""));
-            actionLocation.setText("");
-            confirmationForm.visibleProperty().setValue(false);
-            action = "";
+            reInitialize();
         }
+    }
+
+    private void reInitialize() {
+        mapData = new SimpleStringProperty(arrayToString(getMap()));
+        perimeterUnitsData = new SimpleStringProperty(String.valueOf(getPerimeterUnits()));
+        map.textProperty().bind(mapData);
+        perimeterUnits.textProperty().bind(perimeterUnitsData);
+        confirmationLabel.textProperty().bind(new SimpleStringProperty(""));
+        confirmationError.textProperty().bind(new SimpleStringProperty(""));
+        actionLocation.setText("");
+        confirmationForm.visibleProperty().setValue(false);
+        action = "";
     }
 
     private void handleAction() throws IOException
@@ -303,7 +313,26 @@ public class Controller implements Initializable
         return mapData;
     }
 
-    public static void writeToFile (String filename, String mapData) throws IOException{
+    private int getPerimeterUnits() {
+        String[][] mapData = getMap();
+        int units = 0;
+        int integerNumberOfColumns = Integer.valueOf(mapData[0][1]);
+        int integerNumberOfRows = Integer.valueOf(mapData[0][0]);
+        for (int i = 0; i < integerNumberOfColumns; i++) {
+            units += Integer.valueOf(mapData[1][i]);
+            units += Integer.valueOf(mapData[integerNumberOfRows][i]);
+        }
+        for (int i = 2; i < integerNumberOfRows; i++) {
+            System.out.println(Integer.valueOf(mapData[i][0]));
+            System.out.println(Integer.valueOf(mapData[i][integerNumberOfColumns - 1]));
+            units += Integer.valueOf(mapData[i][0]);
+            units += Integer.valueOf(mapData[i][integerNumberOfColumns - 1]);
+        }
+
+        return units;
+    }
+
+    private static void writeToFile (String filename, String mapData) throws IOException{
         try {
             File myObj = new File(filename);
             if (myObj.createNewFile()) {

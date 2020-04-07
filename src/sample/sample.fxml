@@ -26,6 +26,8 @@
             <Button text="Expediaza"  GridPane.rowIndex="2" GridPane.columnIndex="2" onAction="#handleActionLocation" />
             <Text fx:id="confirmationError"  GridPane.rowIndex="3" />
         </GridPane>
+        <Text GridPane.rowIndex="5">Unitati pe perimetru: </Text>
+        <Text fx:id="perimeterUnits" GridPane.rowIndex="6" />
     </children>
    <columnConstraints>
       <ColumnConstraints />
