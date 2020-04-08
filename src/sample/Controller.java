@@ -1,17 +1,14 @@
 package sample;
 
-import com.sun.media.jfxmedia.events.NewFrameEvent;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
-import javax.swing.*;
 import java.io.File;  // Import the File class
 import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.io.FileWriter;
@@ -29,6 +26,8 @@ public class Controller implements Initializable
     @FXML
     Text perimeterUnits;
     @FXML
+    Text numberOfIslands;
+    @FXML
     Text confirmationLabel;
     @FXML
     Text confirmationError;
@@ -41,14 +40,17 @@ public class Controller implements Initializable
     String rowError = "Valoarea de intrare trebuie sa fie egala cu N sau S";
     String columnError = "Valoarea de intrare trebuie sa fie egala cu E sau V";
 
-    StringProperty mapData = new SimpleStringProperty(arrayToString(getMap()));
+    String[][] mapArrayData = getMap();
+    StringProperty mapData = new SimpleStringProperty(arrayToString(mapArrayData));
     StringProperty perimeterUnitsData = new SimpleStringProperty(String.valueOf(getPerimeterUnits()));
+    StringProperty numberOfIslandsData = new SimpleStringProperty(String.valueOf(countIslands(mapArrayData)));
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle)
     {
         map.textProperty().bind(mapData);
         perimeterUnits.textProperty().bind(perimeterUnitsData);
+        numberOfIslands.textProperty().bind(numberOfIslandsData);
         confirmationLabel.textProperty().bind(new SimpleStringProperty(""));
         confirmationError.textProperty().bind(new SimpleStringProperty(""));
     }
@@ -103,8 +105,16 @@ public class Controller implements Initializable
     }
 
     private void reInitialize() {
-        mapData = new SimpleStringProperty(arrayToString(getMap()));
+        mapArrayData = getMap();
+        mapData = new SimpleStringProperty(arrayToString(mapArrayData));
         perimeterUnitsData = new SimpleStringProperty(String.valueOf(getPerimeterUnits()));
+//        numberOfIslandsData = new SimpleStringProperty(
+//                String.valueOf(
+//                        countIslands(
+//                                mapArrayData
+//                        )
+//                )
+//        );
         map.textProperty().bind(mapData);
         perimeterUnits.textProperty().bind(perimeterUnitsData);
         confirmationLabel.textProperty().bind(new SimpleStringProperty(""));
@@ -194,7 +204,6 @@ public class Controller implements Initializable
                 int currentRowsNumber = Integer.parseInt(mapData[0][0]);
                 int currentColumnsNumber = Integer.parseInt(mapData[0][1]);
                 for (int i = 1; i <= currentRowsNumber; i++) {
-                    System.out.println(mapData[i].length);
                     if (mapData[i][0] == null) {
                         break;
                     }
@@ -229,7 +238,6 @@ public class Controller implements Initializable
                 int currentRowsNumber = Integer.parseInt(mapData[0][0]);
                 int currentColumnsNumber = Integer.parseInt(mapData[0][1]);
                 for (int i = 1; i <= currentRowsNumber; i++) {
-                    System.out.println(mapData[i].length);
                     if (mapData[i][0] == null) {
                         break;
                     }
@@ -251,7 +259,6 @@ public class Controller implements Initializable
         stringMapData = stringMapData.replaceAll("\t", " ");
         stringMapData = stringMapData.replaceAll(" " + System.lineSeparator(), System.lineSeparator());
         stringMapData = stringMapData.replaceAll(System.lineSeparator() + System.lineSeparator(), System.lineSeparator());
-        System.out.println(stringMapData);
         writeToFile(System.getProperty("user.dir") + "/src/sample/Insule.in", stringMapData);
     }
 
@@ -323,8 +330,6 @@ public class Controller implements Initializable
             units += Integer.valueOf(mapData[integerNumberOfRows][i]);
         }
         for (int i = 2; i < integerNumberOfRows; i++) {
-            System.out.println(Integer.valueOf(mapData[i][0]));
-            System.out.println(Integer.valueOf(mapData[i][integerNumberOfColumns - 1]));
             units += Integer.valueOf(mapData[i][0]);
             units += Integer.valueOf(mapData[i][integerNumberOfColumns - 1]);
         }
@@ -353,5 +358,21 @@ public class Controller implements Initializable
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
+    }
+
+    private static int countIslands(String[][] map)
+    {
+        int count = 0;
+
+        for (int i = 1; i <= Integer.parseInt(map[0][0]); i++) {
+            for (int j = 0; j < Integer.parseInt(map[0][1]); j++) {
+                if (Integer.parseInt(map[i][j]) == 1) {
+                    if ((i <= 1 || Integer.parseInt(map[i-1][j]) == 0) && (j == 0 || Integer.parseInt(map[i][j-1]) == 0))
+                        count++;
+                }
+            }
+        }
+
+        return count;
     }
 }

@@ -28,6 +28,8 @@
         </GridPane>
         <Text GridPane.rowIndex="5">Unitati pe perimetru: </Text>
         <Text fx:id="perimeterUnits" GridPane.rowIndex="6" />
+        <Text GridPane.rowIndex="7">Numarul de insule: </Text>
+        <Text fx:id="numberOfIslands" GridPane.rowIndex="8" />
     </children>
    <columnConstraints>
       <ColumnConstraints />
