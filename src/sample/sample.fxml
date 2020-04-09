@@ -30,6 +30,7 @@
         <Text fx:id="perimeterUnits" GridPane.rowIndex="6" />
         <Text GridPane.rowIndex="7">Numarul de insule: </Text>
         <Text fx:id="numberOfIslands" GridPane.rowIndex="8" />
+        <Text fx:id="sortedColumnsInfo" GridPane.rowIndex="9" />
     </children>
    <columnConstraints>
       <ColumnConstraints />

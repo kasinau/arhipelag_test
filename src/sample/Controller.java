@@ -28,6 +28,8 @@ public class Controller implements Initializable
     @FXML
     Text numberOfIslands;
     @FXML
+    Text sortedColumnsInfo;
+    @FXML
     Text confirmationLabel;
     @FXML
     Text confirmationError;
@@ -44,6 +46,7 @@ public class Controller implements Initializable
     StringProperty mapData = new SimpleStringProperty(arrayToString(mapArrayData));
     StringProperty perimeterUnitsData = new SimpleStringProperty(String.valueOf(getPerimeterUnits()));
     StringProperty numberOfIslandsData = new SimpleStringProperty(String.valueOf(countIslands(mapArrayData)));
+    StringProperty sortedColumnsInfoData = new SimpleStringProperty(getSortedColumnsString(getMapSortInfo(mapArrayData)));
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle)
@@ -51,6 +54,7 @@ public class Controller implements Initializable
         map.textProperty().bind(mapData);
         perimeterUnits.textProperty().bind(perimeterUnitsData);
         numberOfIslands.textProperty().bind(numberOfIslandsData);
+        sortedColumnsInfo.textProperty().bind(sortedColumnsInfoData);
         confirmationLabel.textProperty().bind(new SimpleStringProperty(""));
         confirmationError.textProperty().bind(new SimpleStringProperty(""));
     }
@@ -108,15 +112,11 @@ public class Controller implements Initializable
         mapArrayData = getMap();
         mapData = new SimpleStringProperty(arrayToString(mapArrayData));
         perimeterUnitsData = new SimpleStringProperty(String.valueOf(getPerimeterUnits()));
-//        numberOfIslandsData = new SimpleStringProperty(
-//                String.valueOf(
-//                        countIslands(
-//                                mapArrayData
-//                        )
-//                )
-//        );
+        numberOfIslandsData = new SimpleStringProperty(String.valueOf(countIslands(mapArrayData)));
+        sortedColumnsInfoData = new SimpleStringProperty(getSortedColumnsString(getMapSortInfo(mapArrayData)));
         map.textProperty().bind(mapData);
         perimeterUnits.textProperty().bind(perimeterUnitsData);
+        sortedColumnsInfo.textProperty().bind(sortedColumnsInfoData);
         confirmationLabel.textProperty().bind(new SimpleStringProperty(""));
         confirmationError.textProperty().bind(new SimpleStringProperty(""));
         actionLocation.setText("");
@@ -374,5 +374,42 @@ public class Controller implements Initializable
         }
 
         return count;
+    }
+
+    private String getSortedColumnsString(int[][] sortedMapInfo)
+    {
+        System.out.println(sortedMapInfo.length);
+        String sortedColumnsStringInfo = "Lista coloanelor in ordine crescatoare(nr coloanei/nr unitati):";
+        for (int i = 0; i <  sortedMapInfo.length; i++) {
+            sortedColumnsStringInfo += ' ' + String.valueOf(sortedMapInfo[i][0] + 1) + '/' + String.valueOf(sortedMapInfo[i][1]);
+        }
+        return  sortedColumnsStringInfo;
+    }
+
+    private int[][] getMapSortInfo(String[][] map)
+    {
+        int rows = Integer.parseInt(map[0][0]);
+        int columns = Integer.parseInt(map[0][1]);
+        int[][] sortInfo = new int[columns][2];
+
+        for (int j = 0; j < columns; j++) {
+            sortInfo[j][0] = j;
+            sortInfo[j][1] = 0;
+            for (int i = 1; i <= rows; i++) {
+                sortInfo[j][1] += Integer.parseInt(map[i][j]);
+            }
+        }
+        int[] tempArray = new int[2];
+        for (int i = 0; i < columns; i++) {
+            for (int j = 1; j < (columns - i); j++) {
+                if (sortInfo[j - 1][1] > sortInfo[j][1]) {
+                    System.arraycopy(sortInfo[j - 1], 0, tempArray, 0, 2);
+                    System.arraycopy(sortInfo[j], 0, sortInfo[j - 1], 0, 2);
+                    System.arraycopy(tempArray, 0, sortInfo[j], 0, 2);
+                }
+            }
+        }
+
+        return sortInfo;
     }
 }
