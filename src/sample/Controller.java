@@ -28,6 +28,8 @@ public class Controller implements Initializable
     @FXML
     Text numberOfIslands;
     @FXML
+    Text maxAreaIsland;
+    @FXML
     Text sortedColumnsInfo;
     @FXML
     Text confirmationLabel;
@@ -46,6 +48,7 @@ public class Controller implements Initializable
     StringProperty mapData = new SimpleStringProperty(arrayToString(mapArrayData));
     StringProperty perimeterUnitsData = new SimpleStringProperty(String.valueOf(getPerimeterUnits()));
     StringProperty numberOfIslandsData = new SimpleStringProperty(String.valueOf(countIslands(mapArrayData)));
+    StringProperty maxAreaIslandData = new SimpleStringProperty(String.valueOf(maxAreaOfIsland(stringToIntMap(mapArrayData))));
     StringProperty sortedColumnsInfoData = new SimpleStringProperty(getSortedColumnsString(getMapSortInfo(mapArrayData)));
 
     @Override
@@ -54,6 +57,7 @@ public class Controller implements Initializable
         map.textProperty().bind(mapData);
         perimeterUnits.textProperty().bind(perimeterUnitsData);
         numberOfIslands.textProperty().bind(numberOfIslandsData);
+        maxAreaIsland.textProperty().bind(maxAreaIslandData);
         sortedColumnsInfo.textProperty().bind(sortedColumnsInfoData);
         confirmationLabel.textProperty().bind(new SimpleStringProperty(""));
         confirmationError.textProperty().bind(new SimpleStringProperty(""));
@@ -113,9 +117,12 @@ public class Controller implements Initializable
         mapData = new SimpleStringProperty(arrayToString(mapArrayData));
         perimeterUnitsData = new SimpleStringProperty(String.valueOf(getPerimeterUnits()));
         numberOfIslandsData = new SimpleStringProperty(String.valueOf(countIslands(mapArrayData)));
+        maxAreaIslandData = new SimpleStringProperty(String.valueOf(maxAreaOfIsland(stringToIntMap(mapArrayData))));
         sortedColumnsInfoData = new SimpleStringProperty(getSortedColumnsString(getMapSortInfo(mapArrayData)));
         map.textProperty().bind(mapData);
         perimeterUnits.textProperty().bind(perimeterUnitsData);
+        numberOfIslands.textProperty().bind(numberOfIslandsData);
+        maxAreaIsland.textProperty().bind(maxAreaIslandData);
         sortedColumnsInfo.textProperty().bind(sortedColumnsInfoData);
         confirmationLabel.textProperty().bind(new SimpleStringProperty(""));
         confirmationError.textProperty().bind(new SimpleStringProperty(""));
@@ -411,5 +418,57 @@ public class Controller implements Initializable
         }
 
         return sortInfo;
+    }
+
+    private int[][] stringToIntMap(String[][] stringMap)
+    {
+        int rows = Integer.valueOf(stringMap[0][0]);
+        int columns = Integer.valueOf(stringMap[0][1]);
+        int[][] integerMap = new int[rows][columns];
+        for (int i = 1; i <= rows; i++) {
+            for (int j = 0; j < columns; j++) {
+                integerMap[i - 1][j] = Integer.valueOf(stringMap[i][j]);
+            }
+        }
+        return integerMap;
+    }
+
+    private int maxAreaOfIsland(int[][] grid)
+    {
+        if (grid == null || grid.length == 0 ||
+                grid[0] == null || grid[0].length == 0) {
+            return 0;
+        }
+
+        int rst = 0;
+        int rows = grid.length;
+        int cols = grid[0].length;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (grid[i][j] == 1) {
+                    int area = infect(grid, i, j, rows, cols, 0);
+                    rst = Math.max(rst, area);
+                }
+            }
+        }
+
+        return rst;
+    }
+
+    private int infect(int[][] grid, int i, int j, int rows, int cols, int area)
+    {
+        if (i < 0 || i >= rows || j < 0 || j >= cols || grid[i][j] != 1) {
+            return area;
+        }
+
+        // Mark the explored island cells with 2.
+        grid[i][j] = 2;
+        area++;
+        int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        for (int[] dir : dirs) {
+            area = infect(grid, i + dir[0], j + dir[1], rows, cols, area);
+        }
+
+        return area;
     }
 }

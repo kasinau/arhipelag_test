@@ -31,6 +31,8 @@
         <Text GridPane.rowIndex="7">Numarul de insule: </Text>
         <Text fx:id="numberOfIslands" GridPane.rowIndex="8" />
         <Text fx:id="sortedColumnsInfo" GridPane.rowIndex="9" />
+        <Text GridPane.rowIndex="10">Aria maxima a unei insule: </Text>
+        <Text fx:id="maxAreaIsland" GridPane.rowIndex="11" />
     </children>
    <columnConstraints>
       <ColumnConstraints />
