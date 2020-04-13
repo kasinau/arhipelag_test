@@ -33,6 +33,11 @@
         <Text fx:id="sortedColumnsInfo" GridPane.rowIndex="9" />
         <Text GridPane.rowIndex="10">Aria maxima a unei insule: </Text>
         <Text fx:id="maxAreaIsland" GridPane.rowIndex="11" />
+        <GridPane fx:id="maxAreaSquare" GridPane.rowIndex="12">
+            <Text fx:id="maxAreaSquareInfo"  GridPane.rowIndex="1" />
+            <TextField fx:id="maxHLimitation" prefHeight="40"  GridPane.rowIndex="2" />
+            <Button text="Limiteaza"  GridPane.rowIndex="2" GridPane.columnIndex="2" onAction="#handleMaxAreaLimitation" />
+        </GridPane>
     </children>
    <columnConstraints>
       <ColumnConstraints />

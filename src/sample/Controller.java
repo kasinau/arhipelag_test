@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.io.FileWriter;
 import java.io.IOException;  // Import this class to handle errors
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Scanner; // Import the Scanner class to read text files
@@ -30,6 +31,8 @@ public class Controller implements Initializable
     @FXML
     Text maxAreaIsland;
     @FXML
+    Text maxAreaSquareInfo;
+    @FXML
     Text sortedColumnsInfo;
     @FXML
     Text confirmationLabel;
@@ -38,7 +41,11 @@ public class Controller implements Initializable
     @FXML
     TextField actionLocation;
     @FXML
+    TextField maxHLimitation;
+    @FXML
     GridPane confirmationForm;
+    @FXML
+    GridPane maxAreaSquare;
 
     String action;
     String rowError = "Valoarea de intrare trebuie sa fie egala cu N sau S";
@@ -61,6 +68,16 @@ public class Controller implements Initializable
         sortedColumnsInfo.textProperty().bind(sortedColumnsInfoData);
         confirmationLabel.textProperty().bind(new SimpleStringProperty(""));
         confirmationError.textProperty().bind(new SimpleStringProperty(""));
+        initializeMaxAreaSquareInfo(Math.min(Integer.valueOf(mapArrayData[0][0]), Integer.valueOf(mapArrayData[0][1])));
+    }
+
+    private void initializeMaxAreaSquareInfo(int maxH) {
+        int[] maxSquareInfo = getMaxSubSquareInfo(
+                stringToIntMap(mapArrayData),
+                maxH
+        );
+        System.out.println(Arrays.toString(maxSquareInfo));
+        setMaxAreaSquareData(getMaxAreaSquareString(maxSquareInfo));
     }
 
     @FXML
@@ -112,6 +129,15 @@ public class Controller implements Initializable
         }
     }
 
+    @FXML
+    private void handleMaxAreaLimitation(ActionEvent event) throws IOException
+    {
+        String maxLimitation = maxHLimitation.getText();
+        if (Integer.valueOf(maxLimitation) > 0) {
+            initializeMaxAreaSquareInfo(Integer.valueOf(maxLimitation));
+        }
+    }
+
     private void reInitialize() {
         mapArrayData = getMap();
         mapData = new SimpleStringProperty(arrayToString(mapArrayData));
@@ -129,6 +155,17 @@ public class Controller implements Initializable
         actionLocation.setText("");
         confirmationForm.visibleProperty().setValue(false);
         action = "";
+        initializeMaxAreaSquareInfo(Math.min(Integer.valueOf(mapArrayData[0][0]), Integer.valueOf(mapArrayData[0][1])));
+    }
+
+    private String getMaxAreaSquareString(int[] maxAreaSquareInfo)
+    {
+        return "Patratul cu aria maxima are suprafata de " + maxAreaSquareInfo[0] + " unitati si coordonalele " + maxAreaSquareInfo[1] + "/" + maxAreaSquareInfo[2] + " si " + maxAreaSquareInfo[3] + "/" + maxAreaSquareInfo[4];
+    }
+
+    private void setMaxAreaSquareData(String maxAreaSquareString)
+    {
+        maxAreaSquareInfo.textProperty().bind(new SimpleStringProperty(maxAreaSquareString));
     }
 
     private void handleAction() throws IOException
@@ -385,7 +422,6 @@ public class Controller implements Initializable
 
     private String getSortedColumnsString(int[][] sortedMapInfo)
     {
-        System.out.println(sortedMapInfo.length);
         String sortedColumnsStringInfo = "Lista coloanelor in ordine crescatoare(nr coloanei/nr unitati):";
         for (int i = 0; i <  sortedMapInfo.length; i++) {
             sortedColumnsStringInfo += ' ' + String.valueOf(sortedMapInfo[i][0] + 1) + '/' + String.valueOf(sortedMapInfo[i][1]);
@@ -470,5 +506,61 @@ public class Controller implements Initializable
         }
 
         return area;
+    }
+
+    // method for Maximum size square sub-matrix with all 1s
+    private int[] getMaxSubSquareInfo(int[][] islandsMap, int maxH)
+    {
+        System.out.println("Inaltimea maxima: " + maxH);
+        int i,j;
+        int rows = islandsMap.length;         //no of rows in islandsMap[][]
+        int columns = islandsMap[0].length;     //no of columns in islandsMap[][]
+        int[][] newDiagonal = new int[rows][columns];
+        int[][] newArea = new int[rows][columns];
+
+        int max_of_s, max_i, max_j;
+
+
+        for(i = 0; i < rows; i++) {
+            newDiagonal[i][0] = islandsMap[i][0];
+            newArea[i][0] = islandsMap[i][0];
+        }
+
+        for(j = 0; j < columns; j++) {
+            newDiagonal[0][j] = islandsMap[0][j];
+            newArea[0][j] = islandsMap[0][j];
+        }
+
+        for(i = 1; i < rows; i++) {
+            for(j = 1; j < columns; j++) {
+                newArea[i][j] = 0;
+                if(islandsMap[i][j] == 1) {
+                    newDiagonal[i][j] = newDiagonal[i-1][j-1] + 1;
+                    for (int ariaStartRow = i + 1 - newDiagonal[i][j]; ariaStartRow <= i; ariaStartRow++) {
+                        for (int ariaStartColumn = j + 1 - newDiagonal[i][j]; ariaStartColumn <= j; ariaStartColumn++) {
+                            newArea[i][j] += islandsMap[ariaStartRow][ariaStartColumn];
+                        }
+                    }
+                } else {
+                    newDiagonal[i][j] = 0;
+                }
+            }
+        }
+
+        int[] resultArray = new int[5];
+        resultArray[0] = 0;
+        for (i = 0; i < rows; i++) {
+            for (j = 0; j < columns; j++) {
+                if (newArea[i][j] > resultArray[0] && newDiagonal[i][j] <= maxH) {
+                    resultArray[0] = newArea[i][j];
+                    resultArray[1] = i + 1;
+                    resultArray[2] = j - newDiagonal[i][j] + 2;
+                    resultArray[3] = i - newDiagonal[i][j] + 2;
+                    resultArray[4] = j + 1;
+                }
+            }
+        }
+
+        return resultArray;
     }
 }
