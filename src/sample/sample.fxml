@@ -22,7 +22,7 @@
         </ButtonBar>
         <GridPane fx:id="confirmationForm" GridPane.rowIndex="4" visible="false">
             <Text fx:id="confirmationLabel"  GridPane.rowIndex="1" />
-            <TextField fx:id="actionLocation" prefHeight="40"  GridPane.rowIndex="2" />
+            <TextField fx:id="actionLocation" prefHeight="20"  GridPane.rowIndex="2" />
             <Button text="Expediaza"  GridPane.rowIndex="2" GridPane.columnIndex="2" onAction="#handleActionLocation" />
             <Text fx:id="confirmationError"  GridPane.rowIndex="3" />
         </GridPane>
@@ -35,8 +35,27 @@
         <Text fx:id="maxAreaIsland" GridPane.rowIndex="11" />
         <GridPane fx:id="maxAreaSquare" GridPane.rowIndex="12">
             <Text fx:id="maxAreaSquareInfo"  GridPane.rowIndex="1" />
-            <TextField fx:id="maxHLimitation" prefHeight="40"  GridPane.rowIndex="2" />
+            <TextField fx:id="maxHLimitation" prefHeight="20"  GridPane.rowIndex="2" />
             <Button text="Limiteaza"  GridPane.rowIndex="2" GridPane.columnIndex="2" onAction="#handleMaxAreaLimitation" />
+        </GridPane>
+        <GridPane fx:id="mapPath" GridPane.rowIndex="13">
+            <Text text="port 1 rind"  GridPane.rowIndex="1" GridPane.columnIndex="1" />
+            <TextField fx:id="p1i" prefHeight="20"  GridPane.rowIndex="1" GridPane.columnIndex="2" />
+            <Text text="port 1 coloana"  GridPane.rowIndex="1" GridPane.columnIndex="3" />
+            <TextField fx:id="p1j" prefHeight="20"  GridPane.rowIndex="1" GridPane.columnIndex="4" />
+            <Text text="oras 1 rind"  GridPane.rowIndex="2" GridPane.columnIndex="1" />
+            <TextField fx:id="o1i" prefHeight="20"  GridPane.rowIndex="2" GridPane.columnIndex="2" />
+            <Text text="oras 1 coloana"  GridPane.rowIndex="2" GridPane.columnIndex="3" />
+            <TextField fx:id="o1j" prefHeight="20"  GridPane.rowIndex="2" GridPane.columnIndex="4" />
+            <Text text="port 2 rind"  GridPane.rowIndex="3" GridPane.columnIndex="1" />
+            <TextField fx:id="p2i" prefHeight="20"  GridPane.rowIndex="3" GridPane.columnIndex="2" />
+            <Text text="port 2 coloana"  GridPane.rowIndex="3" GridPane.columnIndex="3" />
+            <TextField fx:id="p2j" prefHeight="20"  GridPane.rowIndex="3" GridPane.columnIndex="4" />
+            <Text text="oras 2 rind"  GridPane.rowIndex="4" GridPane.columnIndex="1" />
+            <TextField fx:id="o2i" prefHeight="20"  GridPane.rowIndex="4" GridPane.columnIndex="2" />
+            <Text text="oras 2 coloana"  GridPane.rowIndex="4" GridPane.columnIndex="3" />
+            <TextField fx:id="o2j" prefHeight="20"  GridPane.rowIndex="4" GridPane.columnIndex="4" />
+            <Button text="Calculeaza cale"  GridPane.rowIndex="5" GridPane.columnIndex="4" onAction="#calculatePath" />
         </GridPane>
     </children>
    <columnConstraints>

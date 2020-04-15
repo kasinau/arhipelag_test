@@ -14,10 +14,7 @@ import java.io.FileNotFoundException;  // Import this class to handle errors
 import java.io.FileWriter;
 import java.io.IOException;  // Import this class to handle errors
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.ResourceBundle;
-import java.util.Scanner; // Import the Scanner class to read text files
+import java.util.*;
 
 public class Controller implements Initializable
 {
@@ -46,6 +43,24 @@ public class Controller implements Initializable
     GridPane confirmationForm;
     @FXML
     GridPane maxAreaSquare;
+    @FXML
+    GridPane mapPath;
+    @FXML
+    TextField p1i;
+    @FXML
+    TextField p1j;
+    @FXML
+    TextField p2i;
+    @FXML
+    TextField p2j;
+    @FXML
+    TextField o1i;
+    @FXML
+    TextField o1j;
+    @FXML
+    TextField o2i;
+    @FXML
+    TextField o2j;
 
     String action;
     String rowError = "Valoarea de intrare trebuie sa fie egala cu N sau S";
@@ -58,6 +73,11 @@ public class Controller implements Initializable
     StringProperty maxAreaIslandData = new SimpleStringProperty(String.valueOf(maxAreaOfIsland(stringToIntMap(mapArrayData))));
     StringProperty sortedColumnsInfoData = new SimpleStringProperty(getSortedColumnsString(getMapSortInfo(mapArrayData)));
 
+
+    // M x N matrix
+    private int M = 0;
+    private int N = 0;
+
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle)
     {
@@ -69,6 +89,7 @@ public class Controller implements Initializable
         confirmationLabel.textProperty().bind(new SimpleStringProperty(""));
         confirmationError.textProperty().bind(new SimpleStringProperty(""));
         initializeMaxAreaSquareInfo(Math.min(Integer.valueOf(mapArrayData[0][0]), Integer.valueOf(mapArrayData[0][1])));
+        setMatrixDimensions();
     }
 
     private void initializeMaxAreaSquareInfo(int maxH) {
@@ -78,6 +99,12 @@ public class Controller implements Initializable
         );
         System.out.println(Arrays.toString(maxSquareInfo));
         setMaxAreaSquareData(getMaxAreaSquareString(maxSquareInfo));
+    }
+
+    private void setMatrixDimensions()
+    {
+        N = Integer.valueOf(mapArrayData[0][0]);
+        M = Integer.valueOf(mapArrayData[0][1]);
     }
 
     @FXML
@@ -138,6 +165,67 @@ public class Controller implements Initializable
         }
     }
 
+    @FXML
+    private void calculatePath(ActionEvent event) throws IOException, CloneNotSupportedException
+    {
+//        int mat[][] =
+//                {
+//                        { 1, 1, 1, 1, 1, 0, 0, 1, 1, 1 },
+//                        { 0, 1, 1, 1, 1, 1, 0, 1, 0, 1 },
+//                        { 0, 0, 1, 0, 1, 1, 1, 0, 0, 1 },
+//                        { 1, 0, 1, 1, 1, 0, 1, 1, 0, 1 },
+//                        { 0, 0, 0, 1, 0, 0, 0, 1, 0, 1 },
+//                        { 1, 0, 1, 1, 1, 0, 0, 1, 1, 0 },
+//                        { 0, 0, 0, 0, 1, 0, 0, 1, 0, 1 },
+//                        { 0, 1, 1, 1, 1, 1, 1, 1, 0, 0 },
+//                        { 1, 1, 1, 1, 1, 0, 0, 1, 1, 1 },
+//                        { 0, 0, 1, 0, 0, 1, 1, 0, 0, 1 },
+//                };
+
+        // construct a matrix to keep track of visited cells
+        int[][] visited = new int[M][N];
+
+        WayInfo wayInfo = new WayInfo();
+        wayInfo.minDist = Integer.MAX_VALUE;
+        wayInfo.way = new ArrayList<>();
+
+        WayInfo wayInfoTmp = new WayInfo();
+        wayInfoTmp.minDist = 0;
+        wayInfoTmp.way = new ArrayList<>();
+        wayInfo = findShortestPath(stringToIntMap(mapArrayData), visited, 0, 0, 3, 8,
+                wayInfo, wayInfoTmp);
+
+        if(wayInfo.minDist != Integer.MAX_VALUE) {
+            System.out.println("The shortest path from source to destination "
+                    + "has length " + wayInfo.minDist);
+        }
+        else {
+            System.out.println("Destination can't be reached from source");
+        }
+        System.out.println(Arrays.deepToString(wayInfo.way.toArray()));
+
+//        int[][] cleanPathArray = new int[wayInfo.minDist + 1][2];
+////        System.out.println(wayInfo.way.size());
+////        System.out.println(Arrays.toString(wayInfo.way.get(0)));
+//        int i = wayInfo.minDist;
+//        int waySize = wayInfo.way.size();
+//        System.out.println(waySize);
+//        for (int j = waySize; i >= 0 && j > 0; j--) {
+//            System.out.println(i);
+//            System.out.println(j);
+////            System.out.println(Arrays.toString(wayInfo.way.get(j - 1)));
+//            int[] wayItem = wayInfo.way.get(j - 1);
+//            if (j < waySize - 1 && (cleanPathArray[i + 1][0] != wayItem[0] && cleanPathArray[i + 1][1] != wayItem[1])) {
+//                System.out.println("Skipping item " + Arrays.toString(wayItem) + " compared to item " + Arrays.toString(cleanPathArray[i + 1]));
+//                continue;
+//            }
+//            System.out.println("Copy item " + Arrays.toString(wayItem));
+//            System.arraycopy(wayItem, 0, cleanPathArray[i], 0, 2);
+//            i--;
+//        }
+//        System.out.println(Arrays.deepToString(cleanPathArray));
+    }
+
     private void reInitialize() {
         mapArrayData = getMap();
         mapData = new SimpleStringProperty(arrayToString(mapArrayData));
@@ -156,6 +244,7 @@ public class Controller implements Initializable
         confirmationForm.visibleProperty().setValue(false);
         action = "";
         initializeMaxAreaSquareInfo(Math.min(Integer.valueOf(mapArrayData[0][0]), Integer.valueOf(mapArrayData[0][1])));
+        setMatrixDimensions();
     }
 
     private String getMaxAreaSquareString(int[] maxAreaSquareInfo)
@@ -340,7 +429,7 @@ public class Controller implements Initializable
         return map;
     }
 
-    private static String[][] getMap() {
+    private String[][] getMap() {
         String[][] mapData = new String[100][100];
         try {
             File myObj = new File(System.getProperty("user.dir") + "/src/sample/Insule.in");
@@ -381,7 +470,7 @@ public class Controller implements Initializable
         return units;
     }
 
-    private static void writeToFile (String filename, String mapData) throws IOException{
+    private void writeToFile (String filename, String mapData) throws IOException{
         try {
             File myObj = new File(filename);
             if (myObj.createNewFile()) {
@@ -404,7 +493,7 @@ public class Controller implements Initializable
         }
     }
 
-    private static int countIslands(String[][] map)
+    private int countIslands(String[][] map)
     {
         int count = 0;
 
@@ -508,7 +597,6 @@ public class Controller implements Initializable
         return area;
     }
 
-    // method for Maximum size square sub-matrix with all 1s
     private int[] getMaxSubSquareInfo(int[][] islandsMap, int maxH)
     {
         System.out.println("Inaltimea maxima: " + maxH);
@@ -562,5 +650,101 @@ public class Controller implements Initializable
         }
 
         return resultArray;
+    }
+
+
+
+    // Check if it is possible to go to (x, y) from current position. The
+    // function returns false if the cell has value 0 or already visited
+    private boolean isSafe(int mat[][], int visited[][], int x, int y)
+    {
+        return !(mat[x][y] == 0 || visited[x][y] != 0);
+    }
+
+    // if not a valid position, return false
+    private boolean isValid(int x, int y)
+    {
+        return (x < M && y < N && x >= 0 && y >= 0);
+    }
+
+    // Find Shortest Possible Route in a Matrix mat from source cell (0, 0)
+    // to destination cell (x, y)
+
+    // 'min_dist' stores length of longest path from source to destination
+    // found so far and 'dist' maintains length of path from source cell to
+    // the current cell (i, j)
+
+    public WayInfo findShortestPath(int[][] mat, int[][] visited, int i, int j, int x, int y, WayInfo min_dist, WayInfo dist) throws CloneNotSupportedException
+    {
+        int[] stepToAdd = new int[2];
+        stepToAdd[0] = i;
+        stepToAdd[1] = j;
+        if (!min_dist.pathFound) {
+            min_dist.way.add(stepToAdd);
+        }
+        if (!min_dist.pathFound) {
+            dist.way.add(stepToAdd);
+        }
+        // if destination is found, update min_dist
+        if (i == x && j == y)
+        {
+            min_dist.pathFound = true;
+            dist.pathFound = true;
+            int minPath = Integer.min(dist.minDist, min_dist.minDist);
+            if (min_dist.minDist == minPath) {
+                return min_dist;
+            }
+            return dist;
+        }
+
+        // set (i, j) cell as visited
+        visited[i][j] = 1;
+
+        // go to bottom cell
+        if (isValid(i + 1, j) && isSafe(mat, visited, i + 1, j)) {
+            WayInfo newDist = dist.clone();
+            newDist.minDist += 1;
+            min_dist = findShortestPath(mat, visited, i + 1, j, x, y, min_dist, newDist);
+        }
+
+        // go to right cell
+        if (isValid(i, j + 1) && isSafe(mat, visited, i, j + 1)) {
+            WayInfo newDist = dist.clone();
+            newDist.minDist += 1;
+            min_dist = findShortestPath(mat, visited, i, j + 1, x, y, min_dist, newDist);
+        }
+
+        // go to top cell
+        if (isValid(i - 1, j) && isSafe(mat, visited, i - 1, j)) {
+            WayInfo newDist = dist.clone();
+            newDist.minDist += 1;
+            min_dist = findShortestPath(mat, visited, i - 1, j, x, y, min_dist, newDist);
+        }
+
+        // go to left cell
+        if (isValid(i, j - 1) && isSafe(mat, visited, i, j - 1)) {
+            WayInfo newDist = dist.clone();
+            newDist.minDist += 1;
+            min_dist = findShortestPath(mat, visited, i, j - 1, x, y, min_dist, newDist);
+        }
+
+        // Backtrack - Remove (i, j) from visited matrix
+        visited[i][j] = 0;
+
+        return min_dist;
+    }
+
+
+}
+
+class WayInfo implements Cloneable
+{
+    public boolean pathFound = false;
+    public int minDist;
+    public ArrayList<int[]> way;
+
+    public WayInfo clone() throws CloneNotSupportedException
+    {
+        return (WayInfo)super.clone();
     }
 }

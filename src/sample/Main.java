@@ -22,7 +22,7 @@ public class Main extends Application {
         primaryStage.setTitle("Arhipelag");
 //        Image image = new Image("background.jpg");
 //        ImagePattern pattern = new ImagePattern(image);
-        Scene scene = new Scene(root, 800, 800);
+        Scene scene = new Scene(root, 800, 900);
 //        scene.setFill(pattern);
         primaryStage.setScene(scene);
         primaryStage.show();
